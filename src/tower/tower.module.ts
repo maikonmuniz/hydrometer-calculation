@@ -10,6 +10,6 @@ import { TowerRepository } from '../infra/database/repository/tower.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([Condominium, Tower])],
   controllers: [TowerController],
-  providers: [TowerService, CondominiumRepository],
+  providers: [TowerService, CondominiumRepository, TowerRepository],
 })
 export class TowerModule {}

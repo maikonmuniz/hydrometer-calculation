@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Condominium } from './condominium.entity';
+import { Apartment } from './apartment.entity';
 
 @Entity()
 export class Tower {
@@ -10,4 +11,9 @@ export class Tower {
     onDelete: 'CASCADE',
   })
   condominium?: Condominium;
+
+  @OneToMany(() => Apartment, (apartment) => apartment.tower, {
+    cascade: true,
+  })
+  apartments: Apartment[];
 }

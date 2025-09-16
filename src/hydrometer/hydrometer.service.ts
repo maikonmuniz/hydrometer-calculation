@@ -25,7 +25,6 @@ export class HydrometerService {
     }
 
     const hydrometer = this.hydrometerRepository.create({
-      id: body.apartmentId,
       apartment,
     });
 

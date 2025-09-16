@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Apartment } from '../infra/database/entity/apartment.entity';
 import { Tower } from '../infra/database/entity/tower.entity';
 import { ApartmentDTO } from '../dto/apartment.dto';
+import { ApartmentRepository } from '../infra/database/repository/apartment.repository';
 
 @Injectable()
 export class ApartmentService {
@@ -13,6 +14,8 @@ export class ApartmentService {
 
     @InjectRepository(Tower)
     private towerRepository: Repository<Tower>,
+
+    private customApartmentRepository: ApartmentRepository,
   ) {}
 
   async createApartment(body: ApartmentDTO): Promise<Apartment> {
@@ -29,5 +32,20 @@ export class ApartmentService {
     });
 
     return await this.apartmentRepository.save(apartment);
+  }
+
+  async getReadingsByApartmentId(apartmentId: number) {
+    const readings =
+      await this.customApartmentRepository.findReadingsByApartmentId(
+        apartmentId,
+      );
+
+    if (!readings.length) {
+      throw new NotFoundException(
+        `Nenhuma leitura encontrada para o apartamento ${apartmentId}`,
+      );
+    }
+
+    return readings;
   }
 }

@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Apartment } from './apartment.entity';
+import { Reading } from './reading.entity';
 
 @Entity()
 export class Hydrometer {
@@ -10,4 +11,7 @@ export class Hydrometer {
     onDelete: 'CASCADE',
   })
   apartment: Apartment;
+
+  @OneToMany(() => Reading, (reading) => reading.hydrometer)
+  readings: Reading[];
 }

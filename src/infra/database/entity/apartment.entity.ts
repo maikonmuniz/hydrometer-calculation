@@ -1,12 +1,7 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Tower } from './tower.entity';
 import { Person } from './person.entity';
+import { Hydrometer } from './hydrometer.entity';
 
 @Entity()
 export class Apartment {
@@ -20,4 +15,7 @@ export class Apartment {
 
   @OneToMany(() => Person, (person) => person.apartment)
   people: Person[];
+
+  @OneToMany(() => Hydrometer, (hydrometer) => hydrometer.apartment)
+  hydrometers: Hydrometer[];
 }

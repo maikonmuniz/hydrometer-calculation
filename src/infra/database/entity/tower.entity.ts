@@ -6,7 +6,7 @@ export class Tower {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Condominium, (condominium) => condominium.tower, {
+  @ManyToOne(() => Condominium, (condominium) => condominium.towers, {
     onDelete: 'CASCADE',
   })
   condominium?: Condominium;

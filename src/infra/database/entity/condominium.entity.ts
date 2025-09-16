@@ -31,5 +31,5 @@ export class Condominium {
   uf: string;
 
   @OneToMany(() => Tower, (tower) => tower.condominium, { cascade: true })
-  tower: Tower[];
+  towers: Tower[];
 }

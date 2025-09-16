@@ -4,8 +4,8 @@ import { ApartmentController } from './apartment.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Apartment } from 'src/infra/database/entity/apartment.entity';
 import { Tower } from 'src/infra/database/entity/tower.entity';
-import { ApartmentRepository } from 'src/infra/database/repository/apartment.repository';
-import { TowerRepository } from 'src/infra/database/repository/tower.repository';
+import { ApartmentRepository } from '../infra/database/repository/apartment.repository';
+import { TowerRepository } from '../infra/database/repository/tower.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Apartment, Tower])],

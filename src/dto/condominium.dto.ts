@@ -2,11 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber, IsOptional, IsArray } from 'class-validator';
 
 export class CondominiumDTO {
-  @ApiProperty({ description: 'ID do condomínio', example: 1 })
-  @IsNumber()
-  @IsOptional()
-  id?: number;
-
   @ApiProperty({
     description: 'Nome do condomínio',
     example: 'Sunset Condominium',

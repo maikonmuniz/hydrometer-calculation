@@ -2,6 +2,18 @@
 ## Project setup
 
 
+## 📖 Documentação da API (Swagger)
+
+Toda a API está documentada no Swagger, permitindo explorar os **endpoints**, **parâmetros** e **respostas** de forma interativa.
+
+### 🔹 Acessando o Swagger
+
+Abra o navegador e acesse:
+
+```text
+http://localhost:3000/api
+```
+## Routes
 ```http
 POST /condominium/create
 ```
@@ -95,7 +107,7 @@ POST /reading
 }
 ```
 
-### run project
+### Run project
 ```bash
 docker compose up
 ```

@@ -5,6 +5,7 @@ import {
   Get,
   ParseIntPipe,
   Param,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApartmentService } from './apartment.service';
@@ -44,5 +45,27 @@ export class ApartmentController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<any> {
     return this.apartmentService.getReadingsByApartmentId(id);
+  }
+
+  @Get(':id/gas-consumption')
+  @ApiOperation({
+    summary:
+      'Consultar consumo de gás de um apartamento em um intervalo de datas',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Consumo de gás retornado com sucesso',
+  })
+  @ApiResponse({ status: 404, description: 'Apartamento não encontrado' })
+  async getGasConsumptionByApartment(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('dateStart') dateStart: string,
+    @Query('dateEnd') dateEnd: string,
+  ): Promise<any> {
+    return this.apartmentService.gasConsumptionByApartment(
+      id,
+      dateStart,
+      dateEnd,
+    );
   }
 }

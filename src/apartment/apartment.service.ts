@@ -48,4 +48,17 @@ export class ApartmentService {
 
     return readings;
   }
+
+  async gasConsumptionByApartment(
+    id: number,
+    dateStart: string,
+    dataEnd: string,
+  ) {
+    const gasConsumption = this.customApartmentRepository.dateFilterByApartment(
+      id,
+      dateStart,
+      dataEnd,
+    );
+    return gasConsumption;
+  }
 }

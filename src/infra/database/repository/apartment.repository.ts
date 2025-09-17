@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Apartment } from '../entity/apartment.entity';
 import { Reading } from '../entity/reading.entity';
@@ -18,5 +18,28 @@ export class ApartmentRepository extends Repository<Apartment> {
       .select(['re', 'ap.id'])
       .where('ap.id = :apartmentId', { apartmentId })
       .getRawMany();
+  }
+
+  async dateFilterByApartment(
+    id: number,
+    dateStart: string,
+    dataEnd: string,
+  ): Promise<any[]> {
+    const readings = await this.dataSource.query(
+      `
+      SELECT reading.*
+      FROM reading
+      INNER JOIN hydrometer ON reading.hydrometerId = hydrometer.id
+      INNER JOIN apartment ON hydrometer.apartmentId = apartment.id
+      WHERE apartment.id = ? and reading.readingDate BETWEEN ? AND ?;
+      `,
+      [id, dateStart, dataEnd],
+    );
+
+    if (!readings.length) {
+      throw new NotFoundException('Nenhuma informação nesse intevalor');
+    }
+
+    return readings;
   }
 }

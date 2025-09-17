@@ -1,15 +1,12 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CondominiumDTO } from '../dto/condominium.dto';
 import { Condominium } from '../infra/database/entity/condominium.entity';
+import { CondominiumRepository } from '../infra/database/repository/condominium.repository';
 
 @Injectable()
 export class CondominiumService {
-  constructor(
-    @InjectRepository(Condominium)
-    private condominiumRepository: Repository<Condominium>,
-  ) {}
+  constructor(private readonly condominiumRepository: CondominiumRepository) {}
 
   private ensureRequiredFields(
     body: CondominiumDTO,
@@ -44,6 +41,10 @@ export class CondominiumService {
     }
 
     const condominium = this.condominiumRepository.create(body);
-    return await this.condominiumRepository.save(condominium);
+    return this.condominiumRepository.save(condominium);
+  }
+
+  async getReadingsByCondominiumId(condominiumId: number): Promise<any[]> {
+    return this.condominiumRepository.getReadingsByCondominiumId(condominiumId);
   }
 }

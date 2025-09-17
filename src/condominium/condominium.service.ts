@@ -1,5 +1,4 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CondominiumDTO } from '../dto/condominium.dto';
 import { Condominium } from '../infra/database/entity/condominium.entity';
 import { CondominiumRepository } from '../infra/database/repository/condominium.repository';
@@ -46,5 +45,18 @@ export class CondominiumService {
 
   async getReadingsByCondominiumId(condominiumId: number): Promise<any[]> {
     return this.condominiumRepository.getReadingsByCondominiumId(condominiumId);
+  }
+
+  async gasConsumptionByCondominium(
+    id: number,
+    dateStart: string,
+    dataEnd: string,
+  ) {
+    const gasConsumption = this.condominiumRepository.dateFilterByCondominium(
+      id,
+      dateStart,
+      dataEnd,
+    );
+    return gasConsumption;
   }
 }

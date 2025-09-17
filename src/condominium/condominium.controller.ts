@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CondominiumService } from './condominium.service';
@@ -44,5 +45,26 @@ export class CondominiumController {
   })
   getReadings(@Param('id', ParseIntPipe) id: number) {
     return this.service.getReadingsByCondominiumId(id);
+  }
+
+  @Get(':id/gas-consumption')
+  @ApiOperation({
+    summary:
+      'Consultar consumo de gás de um condomínio em um intervalo de datas',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Consumo de gás retornado com sucesso',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Condomínio não encontrado',
+  })
+  getGasConsumptionByCondominium(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('dateStart') dateStart: string,
+    @Query('dateEnd') dateEnd: string,
+  ) {
+    return this.service.gasConsumptionByCondominium(id, dateStart, dateEnd);
   }
 }

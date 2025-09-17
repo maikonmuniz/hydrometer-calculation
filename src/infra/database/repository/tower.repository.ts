@@ -27,4 +27,28 @@ export class TowerRepository extends Repository<Tower> {
 
     return readings;
   }
+
+  async dateFilterByTower(
+    id: number,
+    dateStart: string,
+    dataEnd: string,
+  ): Promise<any[]> {
+    const readings = await this.dataSource.query(
+      `
+      SELECT sum(reading.consumption) as consumption
+      FROM reading
+      INNER JOIN hydrometer ON reading.hydrometerId = hydrometer.id
+      INNER JOIN apartment ON hydrometer.apartmentId = apartment.id
+      INNER JOIN tower on apartment.towerId = tower.id
+      WHERE tower.id = ? and reading.readingDate BETWEEN ? AND ?;
+      `,
+      [id, dateStart, dataEnd],
+    );
+
+    if (!readings.length) {
+      throw new NotFoundException('Nenhuma consume encontrado!');
+    }
+
+    return readings;
+  }
 }

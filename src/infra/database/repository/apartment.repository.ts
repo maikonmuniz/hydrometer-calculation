@@ -27,7 +27,7 @@ export class ApartmentRepository extends Repository<Apartment> {
   ): Promise<any[]> {
     const readings = await this.dataSource.query(
       `
-      SELECT reading.*
+      SELECT sum(reading.consumption) as consumption
       FROM reading
       INNER JOIN hydrometer ON reading.hydrometerId = hydrometer.id
       INNER JOIN apartment ON hydrometer.apartmentId = apartment.id

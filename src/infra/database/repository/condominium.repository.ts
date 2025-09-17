@@ -30,4 +30,30 @@ export class CondominiumRepository extends Repository<Condominium> {
 
     return readings;
   }
+
+  async dateFilterByCondominium(
+    id: number,
+    dateStart: string,
+    dateEnd: string,
+  ): Promise<any[]> {
+    const readings = await this.dataSource.query(
+      `
+      SELECT sum(reading.consumption) as consumption
+      FROM reading
+      INNER JOIN hydrometer ON reading.hydrometerId = hydrometer.id
+      INNER JOIN apartment ON hydrometer.apartmentId = apartment.id
+      INNER JOIN tower on apartment.towerId = tower.id
+      INNER JOIN condominium on tower.condominiumId = condominium.id
+      WHERE condominium.id = ? and reading.readingDate BETWEEN ? AND ?;
+
+      `,
+      [id, dateStart, dateEnd],
+    );
+
+    if (!readings.length) {
+      throw new NotFoundException('Nenhuma consumo de gás encontrado!');
+    }
+
+    return readings;
+  }
 }

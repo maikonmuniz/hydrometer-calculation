@@ -30,4 +30,13 @@ export class TowerService {
   async getReadingsByTowerId(towerId: number): Promise<any[]> {
     return this.towerRepository.getReadingsByTowerId(towerId);
   }
+
+  async gasConsumptionByTower(id: number, dateStart: string, dataEnd: string) {
+    const gasConsumption = this.towerRepository.dateFilterByTower(
+      id,
+      dateStart,
+      dataEnd,
+    );
+    return gasConsumption;
+  }
 }

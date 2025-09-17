@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TowerService } from './tower.service';
@@ -40,5 +41,22 @@ export class TowerController {
   @ApiResponse({ status: 404, description: 'Torre não encontrada' })
   async getReadingsByTowerId(@Param('id', ParseIntPipe) id: number) {
     return this.towerService.getReadingsByTowerId(id);
+  }
+
+  @Get(':id/gas-consumption')
+  @ApiOperation({
+    summary: 'Consultar consumo de gás de uma torre em um intervalo de datas',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Consumo de gás retornado com sucesso',
+  })
+  @ApiResponse({ status: 404, description: 'Torre não encontrada' })
+  async getGasConsumptionByTower(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('dateStart') dateStart: string,
+    @Query('dateEnd') dateEnd: string,
+  ) {
+    return this.towerService.gasConsumptionByTower(id, dateStart, dateEnd);
   }
 }

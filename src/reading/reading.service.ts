@@ -33,4 +33,51 @@ export class ReadingService {
 
     return await this.readingRepository.save(reading);
   }
+
+  async updateReading(id: number, body: ReadingDTO): Promise<Reading> {
+    const reading = await this.readingRepository.findOne({
+      where: { id },
+      relations: ['hydrometer'],
+    });
+
+    if (!reading) {
+      throw new NotFoundException(`Leitura com id ${id} não encontrada`);
+    }
+
+    if (body.hydrometerId) {
+      const hydrometer = await this.hydrometerRepository.findOne({
+        where: { id: body.hydrometerId },
+      });
+
+      if (!hydrometer) {
+        throw new NotFoundException('Hidrômetro não encontrado');
+      }
+
+      reading.hydrometer = hydrometer;
+    }
+
+    Object.assign(reading, {
+      readingDate: body.readingDate
+        ? new Date(body.readingDate)
+        : reading.readingDate,
+      consumption: body.consumption ?? reading.consumption,
+      periodicity: body.periodicity ?? reading.periodicity,
+    });
+
+    return this.readingRepository.save(reading);
+  }
+
+  async deleteReading(id: number): Promise<{ message: string }> {
+    const reading = await this.readingRepository.findOne({
+      where: { id },
+    });
+
+    if (!reading) {
+      throw new NotFoundException(`Leitura com id ${id} não encontrada`);
+    }
+
+    await this.readingRepository.remove(reading);
+
+    return { message: `Leitura com id ${id} removida com sucesso` };
+  }
 }

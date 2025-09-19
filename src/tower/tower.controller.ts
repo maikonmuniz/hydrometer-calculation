@@ -3,6 +3,8 @@ import {
   Post,
   Body,
   Get,
+  Put,
+  Delete,
   Param,
   ParseIntPipe,
   Query,
@@ -58,5 +60,33 @@ export class TowerController {
     @Query('dateEnd') dateEnd: string,
   ) {
     return this.towerService.gasConsumptionByTower(id, dateStart, dateEnd);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Atualizar informações de uma torre' })
+  @ApiResponse({
+    status: 200,
+    description: 'Torre atualizada com sucesso',
+    type: Tower,
+  })
+  @ApiResponse({ status: 404, description: 'Torre não encontrada' })
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: TowerDTO,
+  ): Promise<Tower> {
+    return this.towerService.updateTower(id, body);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Remover uma torre' })
+  @ApiResponse({
+    status: 200,
+    description: 'Torre removida com sucesso',
+  })
+  @ApiResponse({ status: 404, description: 'Torre não encontrada' })
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
+    return this.towerService.deleteTower(id);
   }
 }

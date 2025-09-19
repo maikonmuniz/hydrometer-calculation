@@ -28,6 +28,7 @@ export class ApartmentService {
     }
 
     const apartment = this.apartmentRepository.create({
+      ...body,
       tower,
     });
 
@@ -60,5 +61,44 @@ export class ApartmentService {
       dataEnd,
     );
     return gasConsumption;
+  }
+
+  async updateApartment(id: number, body: ApartmentDTO): Promise<Apartment> {
+    const apartment = await this.apartmentRepository.findOne({
+      where: { id },
+      relations: ['tower'],
+    });
+
+    if (!apartment) {
+      throw new NotFoundException(`Apartamento com id ${id} não encontrado`);
+    }
+
+    if (body.towerId) {
+      const tower = await this.towerRepository.findOne({
+        where: { id: body.towerId },
+      });
+      if (!tower) {
+        throw new NotFoundException('Torre não encontrada');
+      }
+      apartment.tower = tower;
+    }
+
+    Object.assign(apartment, body);
+
+    return await this.apartmentRepository.save(apartment);
+  }
+
+  async deleteApartment(id: number): Promise<{ message: string }> {
+    const apartment = await this.apartmentRepository.findOne({
+      where: { id },
+    });
+
+    if (!apartment) {
+      throw new NotFoundException(`Apartamento com id ${id} não encontrado`);
+    }
+
+    await this.apartmentRepository.remove(apartment);
+
+    return { message: `Apartamento com id ${id} removido com sucesso` };
   }
 }

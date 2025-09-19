@@ -6,6 +6,8 @@ import {
   ParseIntPipe,
   Param,
   Query,
+  Put,
+  Delete,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApartmentService } from './apartment.service';
@@ -67,5 +69,30 @@ export class ApartmentController {
       dateStart,
       dateEnd,
     );
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Atualizar informações de um apartamento' })
+  @ApiResponse({
+    status: 200,
+    description: 'Apartamento atualizado com sucesso',
+    type: Apartment,
+  })
+  @ApiResponse({ status: 404, description: 'Apartamento não encontrado' })
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: ApartmentDTO,
+  ): Promise<Apartment> {
+    return await this.apartmentService.updateApartment(id, body);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Remover um apartamento' })
+  @ApiResponse({ status: 200, description: 'Apartamento removido com sucesso' })
+  @ApiResponse({ status: 404, description: 'Apartamento não encontrado' })
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
+    return await this.apartmentService.deleteApartment(id);
   }
 }

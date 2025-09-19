@@ -35,4 +35,51 @@ export class PersonService {
 
     return await this.personRepository.save(person);
   }
+
+  async updatePerson(id: number, body: PersonDTO): Promise<Person> {
+    const person = await this.personRepository.findOne({
+      where: { id },
+      relations: ['apartment'],
+    });
+
+    if (!person) {
+      throw new NotFoundException(`Pessoa com id ${id} não encontrada`);
+    }
+
+    if (body.apartmentId) {
+      const apartment = await this.apartmentRepository.findOne({
+        where: { id: body.apartmentId },
+      });
+
+      if (!apartment) {
+        throw new NotFoundException('Apartamento não encontrado');
+      }
+
+      person.apartment = apartment;
+    }
+
+    Object.assign(person, {
+      name: body.name ?? person.name,
+      address: body.address ?? person.address,
+      email: body.email ?? person.email,
+      phone: body.phone ?? person.phone,
+      type: body.type ?? person.type,
+    });
+
+    return this.personRepository.save(person);
+  }
+
+  async deletePerson(id: number): Promise<{ message: string }> {
+    const person = await this.personRepository.findOne({
+      where: { id },
+    });
+
+    if (!person) {
+      throw new NotFoundException(`Pessoa com id ${id} não encontrada`);
+    }
+
+    await this.personRepository.remove(person);
+
+    return { message: `Pessoa com id ${id} removida com sucesso` };
+  }
 }

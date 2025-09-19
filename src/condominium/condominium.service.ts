@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CondominiumDTO } from '../dto/condominium.dto';
 import { Condominium } from '../infra/database/entity/condominium.entity';
 import { CondominiumRepository } from '../infra/database/repository/condominium.repository';
@@ -52,11 +56,38 @@ export class CondominiumService {
     dateStart: string,
     dataEnd: string,
   ) {
-    const gasConsumption = this.condominiumRepository.dateFilterByCondominium(
+    return this.condominiumRepository.dateFilterByCondominium(
       id,
       dateStart,
       dataEnd,
     );
-    return gasConsumption;
+  }
+
+  async update(id: number, body: CondominiumDTO): Promise<Condominium> {
+    const condominium = await this.condominiumRepository.findOne({
+      where: { id },
+    });
+
+    if (!condominium) {
+      throw new NotFoundException(`Condomínio com id ${id} não encontrado.`);
+    }
+
+    Object.assign(condominium, body);
+
+    return this.condominiumRepository.save(condominium);
+  }
+
+  async delete(id: number): Promise<{ message: string }> {
+    const condominium = await this.condominiumRepository.findOne({
+      where: { id },
+    });
+
+    if (!condominium) {
+      throw new NotFoundException(`Condomínio com id ${id} não encontrado.`);
+    }
+
+    await this.condominiumRepository.remove(condominium);
+
+    return { message: `Condomínio com id ${id} removido com sucesso.` };
   }
 }

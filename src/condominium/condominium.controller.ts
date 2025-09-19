@@ -3,6 +3,8 @@ import {
   Controller,
   Post,
   Get,
+  Put,
+  Delete,
   Param,
   ParseIntPipe,
   Query,
@@ -66,5 +68,33 @@ export class CondominiumController {
     @Query('dateEnd') dateEnd: string,
   ) {
     return this.service.gasConsumptionByCondominium(id, dateStart, dateEnd);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Atualizar informações de um condomínio' })
+  @ApiResponse({
+    status: 200,
+    description: 'Condomínio atualizado com sucesso',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Condomínio não encontrado',
+  })
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: CondominiumDTO) {
+    return this.service.update(id, body);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Remover um condomínio' })
+  @ApiResponse({
+    status: 200,
+    description: 'Condomínio removido com sucesso',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Condomínio não encontrado',
+  })
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.service.delete(id);
   }
 }
